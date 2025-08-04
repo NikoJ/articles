@@ -1,0 +1,2 @@
+polars==0.20.8
+deltalake==0.15.1
