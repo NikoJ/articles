@@ -1,3 +1,2 @@
-polars==1.6.0
-pandas==2.0.0
-numpy==1.26.4
+polars==0.20.8
+deltalake==0.15.1
