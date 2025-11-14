@@ -4,7 +4,7 @@ Here is the code from the article for practical exploration.
 
 ## 📁 Project Structure
 
-    polars-notebook/
+    the-hidden-treasure-of-delta-log/
     ├── docker-compose.yml
     ├── Dockerfile
     ├── requirements.txt
