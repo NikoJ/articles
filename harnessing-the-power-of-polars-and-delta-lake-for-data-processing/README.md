@@ -4,7 +4,7 @@ Here is the code from the article for practical exploration.
 
 ## 📁 Project Structure
 
-    polars-notebook/
+    harnessing-the-power-of-polars-and-delta-lake-for-data-processing/
     ├── docker-compose.yml
     ├── Dockerfile
     ├── requirements.txt

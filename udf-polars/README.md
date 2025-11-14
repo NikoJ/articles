@@ -1,10 +1,10 @@
-# 📘 Jupyter Notebook: [Improving Code Quality During Data Transformation with Polars.](https://medium.com/data-science/improving-code-quality-during-data-transformation-with-polars-92997e67c8a9)
+# 📘 Jupyter Notebook: [xxxx.](https://medium.com/@npotapov)
 
 Here is the code from the article for practical exploration.
 
 ## 📁 Project Structure
 
-    improving-code-quality-during-data-transformation-with-polars/
+    udf-polars/
     ├── docker-compose.yml
     ├── Dockerfile
     ├── requirements.txt
@@ -22,7 +22,7 @@ You can launch the notebook with Docker (recommended) or manually in your local 
 ```bash
 git clone https://github.com/NikoJ/articles.git
 
-cd improving-code-quality-during-data-transformation-with-polars
+cd udf-polars
 
 docker-compose up -d
 ```
