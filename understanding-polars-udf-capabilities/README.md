@@ -1,10 +1,10 @@
-# 📘 Jupyter Notebook: [xxxx.](https://medium.com/@npotapov)
+# 📘 Jupyter Notebook: [Understanding Polars UDF Capabilities.](https://medium.com/@npotapov)
 
 Here is the code from the article for practical exploration.
 
 ## 📁 Project Structure
 
-    udf-polars/
+    understanding-polars-udf-capabilities/
     ├── docker-compose.yml
     ├── Dockerfile
     ├── requirements.txt
