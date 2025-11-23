@@ -1,10 +1,10 @@
-# 📘 Jupyter Notebook: [Understanding Polars UDF Capabilities.](https://medium.com/@npotapov)
+# 📘 Jupyter Notebook: [8 Practical Polars Functions Every Data Professional Should Have in Their Toolkit.](https://medium.com/@npotapov)
 
 Here is the code from the article for practical exploration.
 
 ## 📁 Project Structure
 
-    understanding-polars-udf-capabilities/
+    8-practical-polars-functions/
     ├── docker-compose.yml
     ├── Dockerfile
     ├── requirements.txt
@@ -22,7 +22,7 @@ You can launch the notebook with Docker (recommended) or manually in your local 
 ```bash
 git clone https://github.com/NikoJ/articles.git
 
-cd understanding-polars-udf-capabilities
+cd 8-practical-polars-functions
 
 docker-compose up -d
 ```
