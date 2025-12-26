@@ -5,6 +5,9 @@
 This repository contains Jupyter notebooks, code snippets, and practical examples featured in my articles published on Medium and Towards Data Science. The goal is to bridge the gap between theory and implementation with production-ready examples.
 
 ## 📝 Featured Articles
+- 🏗️ [Plan: Building a Mini Query Engine in Python](https://nikoondata.substack.com/p/plan-building-a-mini-query-engine)
+The chapter-by-chapter plan for a draft-first series on implementing a mini query engine in Python
+
 - 🔥 [Practical Introduction to Polars](https://medium.com/data-science/practical-introduction-to-polars-8d9cdca350f1)
 High-performance data wrangling with Python and Polars
 
@@ -20,9 +23,6 @@ Unlocking performance insights from Delta Lake internals
 - 🚧 [How to Update ClickHouse Tables in Production Without Downtime](http://medium.com/data-engineer-things/how-to-update-clickhouse-tables-in-production-without-downtime-85b35a8f5a36)
 Techniques for safe schema evolution in ClickHouse
 
-- 🏗️ [4 Tips to Consider Before Building a New Data Mart](https://medium.com/@npotapov/4-tips-to-consider-before-building-a-new-data-mart-683cbec69483)
-Best practices for building reliable and scalable data marts
-
 ## 🛠️ Technologies & Topics
 - Polars, ClickHouse, Delta Lake, Temporal, Apache Arrow
 - ETL/ELT design, Data Lake Architecture, Data Quality & Observability
@@ -32,4 +32,6 @@ Each folder in this repository corresponds to a specific article and contains fu
 
 > This repository serves as a hands-on companion to my writing. Dive in, run the examples, and build better data systems.
 
-📖 More content: [medium.com/@npotapov](https://medium.com/@npotapov)
+📖 More content:
+- [medium.com/@npotapov](https://medium.com/@npotapov)
+- [nikoondata.substack.com](https://nikoondata.substack.com/)
