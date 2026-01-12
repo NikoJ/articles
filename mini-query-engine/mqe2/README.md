@@ -1,4 +1,4 @@
-# MQE2
+# [MQE2: Data Model of a Mini Query Engine in Python](https://nikoondata.substack.com/p/mqe2-data-model-of-mini-query-engine)
 
 This repo contains a small educational prototype of a **mini query engine in Python**,
 built on top of **Apache Arrow**.
