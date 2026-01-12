@@ -8,6 +8,9 @@ This repository contains Jupyter notebooks, code snippets, and practical example
 - 🏗️ [Plan: Building a Mini Query Engine in Python](https://nikoondata.substack.com/p/plan-building-a-mini-query-engine)
 The chapter-by-chapter plan for a draft-first series on implementing a mini query engine in Python
 
+- 🔥 [8 Advanced Polars Functions That Save Hours in Data Work](https://blog.dataengineerthings.org/8-advanced-polars-functions-that-save-hours-in-data-work-df43ef6440ce)
+Boost speed with the Lazy API and write faster Polars code using built-in tools
+
 - 🔥 [Practical Introduction to Polars](https://medium.com/data-science/practical-introduction-to-polars-8d9cdca350f1)
 High-performance data wrangling with Python and Polars
 
