@@ -1,4 +1,4 @@
-# 📘 Jupyter Notebook: [Understanding Polars UDF Capabilities.](https://medium.com/@npotapov)
+# 📘 Jupyter Notebook: [Understanding Polars UDF Capabilities.](https://medium.com/data-engineer-things/understanding-polars-udf-capabilities-8f83cf7d882e)
 
 Here is the code from the article for practical exploration.
 
