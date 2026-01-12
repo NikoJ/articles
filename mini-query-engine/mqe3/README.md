@@ -1,4 +1,4 @@
-# MQE3: Preparing Expressions for Logical Plans
+# [MQE3: Preparing Expressions for Logical Plans](https://nikoondata.substack.com/p/mqe3-preparing-exprs-for-logical-plans)
 
 This repo contains a small educational prototype of a **mini query engine in Python**,
 built on top of **Apache Arrow**.
