@@ -24,8 +24,8 @@ The engine is built around:
 ## Draft plan for the Mini Query Engine in Python series
 
 - [MQE1: Overall Architecture of a Mini Query Engine](https://nikoondata.substack.com/p/mqe1-overall-architecture-of-mini-query-engine)
-- How we store data inside the engine (data model on Apache Arrow)
-- Expression DSL (col(), lit(), conditions and operations)
+- [MQE2: Data Model of a Mini Query Engine in Python](https://nikoondata.substack.com/p/mqe2-data-model-of-mini-query-engine)
+- [MQE3: Preparing Expressions for Logical Plans](https://nikoondata.substack.com/p/mqe3-preparing-exprs-for-logical-plans)
 - Logical plan: Scan/Filter/Projection
 - Physical plan and planner: how logic turns into execution
 - Executor: running the physical plan
