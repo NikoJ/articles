@@ -33,9 +33,9 @@ def main() -> None:
     ds: DataSource = FakeDataSource(schema)
 
     # 3) Build logical plan:
-    # SELECT id, first_name
+    # SELECT id * 2 AS new_id, first_name
     # FROM employee.csv
-    # WHERE state = 'CO'
+    # WHERE first_name = 'Niko'
     scan: Scan = Scan(source_uri="employee.csv", data_source=ds)
 
     plan: Projection = Projection(
