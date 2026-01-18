@@ -26,7 +26,7 @@ The engine is built around:
 - [MQE1: Overall Architecture of a Mini Query Engine](https://nikoondata.substack.com/p/mqe1-overall-architecture-of-mini-query-engine)
 - [MQE2: Data Model of a Mini Query Engine in Python](https://nikoondata.substack.com/p/mqe2-data-model-of-mini-query-engine)
 - [MQE3: Preparing Expressions for Logical Plans](https://nikoondata.substack.com/p/mqe3-preparing-exprs-for-logical-plans)
-- Logical plan: Scan/Filter/Projection
+- [MQE4: Logical Query Plans (Scan, Filter, Projection)](https://nikoondata.substack.com/p/mqe4-logical-query-plans-scan-filter-projection)
 - Physical plan and planner: how logic turns into execution
 - Executor: running the physical plan
 - JOIN: combining tables
