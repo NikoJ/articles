@@ -49,6 +49,29 @@ class TableSchema:
         if len(names) != len(set(names)):
             raise ValueError("TableSchema contains duplicate field names")
 
+
+    def select(self, names: list[str]) -> "TableSchema":
+        """
+        Return a new TableSchema containing only fields listed in `names`.
+
+        - preserves the order of `names`
+        - raises a clear error if any column is missing
+        """
+        if not names:
+            return TableSchema([])
+
+        index:dict[str, SchemaField] = {f.name: f for f in self.fields}
+
+        missing:list[str] = [name for name in names if name not in index]
+        if missing:
+            raise ValueError(
+                f"Unknown columns in projection: {missing}. "
+                f"Available columns: {sorted(index.keys())}"
+            )
+
+        selected_fields:list[SchemaField] = [index[name] for name in names]
+        return TableSchema(selected_fields)
+
     def to_arrow(self) -> pa.Schema:
         """
         Convert this TableSchema into a pyarrow.Schema.
