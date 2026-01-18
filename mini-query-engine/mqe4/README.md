@@ -1,4 +1,4 @@
-# [MQE4: Logical Query Plans (Scan, Filter, Projection)](https://nikoondata.substack.com/)
+# [MQE4: Logical Query Plans (Scan, Filter, Projection)](https://nikoondata.substack.com/p/mqe4-logical-query-plans-scan-filter-projection)
 
 This repo contains a small educational prototype of a **mini query engine in Python**,
 built on top of **Apache Arrow**.
