@@ -1,57 +1,67 @@
 import pyarrow as pa
 
-from core.datasources import DataSource
-from core.logical_expr import col
-from core.logical_plan import Filter, Projection, Scan
-from core.tables import SchemaField, TableSchema
+from core.datasources import InMemoryDataSource
+from core.datatypes import ArrowColumn
+from core.physical_expr import ColumnExpression, EqExpression, lit
+from core.physical_plan import FilterExec, ProjectionExec, ScanExec
+from core.tables import DataBatch, SchemaField, TableSchema
 
-# --- Minimal DataSource stub (for planning only) ----------------------------
-
-class FakeDataSource(DataSource):
-    def __init__(self, schema: TableSchema):
-        self._schema = schema
-
-    def schema(self) -> TableSchema:
-        return self._schema
-
-    def scan(self, projection: list[str]):
-        raise NotImplementedError("This demo builds logical plans only")
-
-# -------------------------------
 
 def main() -> None:
-    # 1) Define schema
+    # 1) Build a single in-memory DataBatch
     schema: TableSchema = TableSchema(
-        fields=[
+        [
             SchemaField("id", pa.int64()),
             SchemaField("first_name", pa.string()),
             SchemaField("state", pa.string()),
         ]
     )
 
-    # 2) Create a fake source
-    ds: DataSource = FakeDataSource(schema)
+    data: list[ArrowColumn] = [
+        ArrowColumn(pa.array([1, 2, 3])),
+        ArrowColumn(pa.array(["Niko", "Alice", "Joy"])),
+        ArrowColumn(pa.array(["CO", "CA", "NY"])),
+    ]
 
-    # 3) Build logical plan:
+    batch: DataBatch = DataBatch(schema=schema, fields=data)
+
+    # 2) Create InMemoryDataSource with auto-schema inference
+    ds: InMemoryDataSource = InMemoryDataSource(data=[batch])
+
+    # 3) Build Physical Plan
+    #
+    # SQL-ish:
     # SELECT id * 2 AS new_id, first_name
-    # FROM employee.csv
+    # FROM in_memory
     # WHERE first_name = 'Niko'
-    scan: Scan = Scan(source_uri="employee.csv", data_source=ds)
 
-    plan: Projection = Projection(
-        input=Filter(
-            input=scan,
-            expr=(col("first_name") == "Niko"),
-        ),
-        exprs=[(col("id") * 2).as_("new_id"), col("first_name")],
+    scan: ScanExec = ScanExec(data_source=ds, projection=[])  # [] means "read all"
+
+    predicate: EqExpression = EqExpression(
+        ColumnExpression(1),  # first_name
+        lit("Niko"),
+    )
+    filter_: FilterExec = FilterExec(input=scan, predicate=predicate)
+
+    out_schema: TableSchema = TableSchema(
+        fields=[
+            SchemaField("new_id", pa.int64()),
+            SchemaField("first_name", pa.string()),
+        ]
+    )
+    proj: ProjectionExec = ProjectionExec(
+        input=filter_,
+        exprs=[(ColumnExpression(0) * 2).alias("new_id"), ColumnExpression(1)],
+        _schema=out_schema,
     )
 
-    # 4) Print verbose explain (with schema at each node)
-    print(plan.explain())
+    # 4) Print EXPLAIN
+    print("=== PHYSICAL PLAN ===")
+    print(proj.explain(verbose=True))
 
-    # 5) Print the plan (without schema at each node)
-    print()
-    print(plan.explain(verbose=False))
+    # 5) Execute and print output
+    print("\n=== OUTPUT ===")
+    print(next(proj.execute()))
 
 
 if __name__ == "__main__":

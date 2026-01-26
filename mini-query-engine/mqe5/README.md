@@ -17,12 +17,13 @@ TODO
     ├── uv.lock
     ├── ...
     └── core/
-        ├── datatypes.py    # Arrow data types used by the engine
-        ├── tables.py       # SchemaField/TableSchema/DataBatch
-        ├── logical_plan.py # Logical plans (Scan/Filter/Projection) + explain()
-        ├── logical_expr.py # Expression DSL
-        └── datasources.py  # DataSource stub (schema-only for planning)
-
+        ├── datatypes.py        # Arrow data types used by the engine
+        ├── tables.py           # SchemaField/TableSchema/DataBatch
+        ├── logical_plan.py     # Logical plans (Scan/Filter/Projection) + explain()
+        ├── logical_expr.py     # Expression DSL
+        ├── datasources.py      # DataSource stub (schema-only for planning)
+        ├── physical_plan.py    # TODO
+        └── physical_expr.py    # TODO
 ---
 
 ## 🚀 Getting Started
