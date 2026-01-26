@@ -23,7 +23,7 @@ class LogicalPlan:
         """
         raise NotImplementedError
 
-    def explain(self, verbose: bool = True) -> str:
+    def explain(self, verbose: bool = False) -> str:
         """
         Pretty-print the logical plan tree (similar to SQL EXPLAIN).
 
@@ -31,16 +31,7 @@ class LogicalPlan:
         - Children are printed as a tree with └── / ├── connectors.
         - verbose=True appends the output schema to each node.
         """
-        lines: list[str] = [_format_plan_line(self, verbose=verbose)]
-
-        children = self.children()
-        for i, child in enumerate(children):
-            is_last = i == (len(children) - 1)
-            lines.extend(
-                _explain_lines(child, prefix="", is_last=is_last, verbose=verbose)
-            )
-
-        return "\n".join(lines)
+        return print_logical_plan(self, verbose=verbose)
 
 
 class LogicalExpr:
@@ -56,6 +47,11 @@ class LogicalExpr:
         the resulting SchemaField (name and data type).
         """
         raise NotImplementedError
+
+
+# -----------------------------------------------------------------------------
+# Logical Scan
+# -----------------------------------------------------------------------------
 
 
 @dataclass
@@ -103,6 +99,11 @@ class Scan(LogicalPlan):
         return f"Scan: {self.source_uri}; projection={self.projection}"
 
 
+# -----------------------------------------------------------------------------
+# Logical Projection
+# -----------------------------------------------------------------------------
+
+
 @dataclass
 class Projection(LogicalPlan):
     """
@@ -132,6 +133,11 @@ class Projection(LogicalPlan):
         return f"Projection: {joined}"
 
 
+# -----------------------------------------------------------------------------
+# Logical Filter
+# -----------------------------------------------------------------------------
+
+
 @dataclass
 class Filter(LogicalPlan):
     """
@@ -157,26 +163,9 @@ class Filter(LogicalPlan):
         return f"Filter: {self.expr}"
 
 
-def print_logical_plan(
-    plan: LogicalPlan, prefix: str = "", is_last: bool = True
-) -> str:
-    """
-    Format a logical plan as a readable tree.
-    Example:
-        Projection: #id, #name
-        └── Filter: #state = 'CO'
-            └── Scan: employee.csv; projection=None
-    """
-    connector: str = "└── " if is_last else "├── "
-    line: str = f"{prefix}{connector}{plan}\n"
-
-    children: list[LogicalPlan] = plan.children()
-    for i, child in enumerate(children):
-        last: bool = i == len(children) - 1
-        extension: str = "    " if is_last else "│   "
-        line += print_logical_plan(child, prefix + extension, last)
-
-    return line
+# -----------------------------------------------------------------------------
+# Print Logical Plan
+# -----------------------------------------------------------------------------
 
 
 def _format_plan_line(plan: LogicalPlan, verbose: bool) -> str:
@@ -210,3 +199,21 @@ def _explain_lines(
         )
 
     return lines
+
+
+def print_logical_plan(plan: LogicalPlan, verbose: bool = False) -> str:
+    """
+    Format a logical plan as a readable tree.
+    Example:
+        Projection: #id, #name
+        └── Filter: #state = 'CO'
+            └── Scan: employee.csv; projection=None
+    """
+    lines: list[str] = [_format_plan_line(plan, verbose=verbose)]
+
+    children = plan.children()
+    for i, child in enumerate(children):
+        is_last = i == (len(children) - 1)
+        lines.extend(_explain_lines(child, prefix="", is_last=is_last, verbose=verbose))
+
+    return "\n".join(lines)
