@@ -1,4 +1,4 @@
-# [MQE5](https://nikoondata.substack.com/)
+# [MQE5: Physical Plan and Query Execution](https://nikoondata.substack.com/p/mqe5-physical-plan-and-query-execution)
 
 This repo contains a small educational prototype of a **mini query engine in Python**,
 built on top of **Apache Arrow**.
