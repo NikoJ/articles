@@ -32,7 +32,7 @@ def main() -> None:
     #
     # SQL-ish:
     # SELECT id * 2 AS new_id, first_name
-    # FROM in_memory
+    # FROM users (in_memory)
     # WHERE first_name = 'Niko'
 
     scan: ScanExec = ScanExec(data_source=ds, projection=[])  # [] means "read all"
