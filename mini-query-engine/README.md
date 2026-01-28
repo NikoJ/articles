@@ -27,13 +27,11 @@ The engine is built around:
 - [MQE2: Data Model of a Mini Query Engine in Python](https://nikoondata.substack.com/p/mqe2-data-model-of-mini-query-engine)
 - [MQE3: Preparing Expressions for Logical Plans](https://nikoondata.substack.com/p/mqe3-preparing-exprs-for-logical-plans)
 - [MQE4: Logical Query Plans (Scan, Filter, Projection)](https://nikoondata.substack.com/p/mqe4-logical-query-plans-scan-filter-projection)
-- Physical plan and planner: how logic turns into execution
-- Executor: running the physical plan
-- JOIN: combining tables
-- GROUP BY and aggregates
-- Optimizer + EXPLAIN: simple logical rewrites
-- Data sources: CSV and the DataSource layer
-- SQL frontend: plugging in a ready-made parser
+- MQE5: Physical plan and planner: how logic turns into execution
+- MQE6: Executor + DataFrame
+- MQE7: Data sources: CSV and the DataSource layer
+- MQE8: Optimizer + EXPLAIN: simple logical rewrites
+- MQE9: SQL frontend: plugging in a ready-made parser
 
 ---
 
