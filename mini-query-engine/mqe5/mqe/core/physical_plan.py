@@ -49,10 +49,17 @@ class PhysicalPlan:
 
 class PhysicalExpr:
     """
-    TODO
+    Executable (physical) expression evaluated over a DataBatch.
+
+    Operates in a vectorized way: evaluates the whole batch and returns a
+    result ColumnData with the same row count. Used by physical operators
+    (e.g., FilterExec, ProjectionExec). Arrow kernels are preferred when possible.
     """
 
     def evaluate(self, input: DataBatch) -> ColumnData:
+        """
+        Evaluate this expression on the given DataBatch.
+        """
         raise NotImplementedError
 
 
@@ -95,7 +102,7 @@ class ScanExec(PhysicalPlan):
 
     def __str__(self) -> str:
         proj = None if not self.projection else self.projection
-        return f"ScanExec: projection={proj}"
+        return f"ScanExec: projection={proj}, source={type(self.data_source).__name__})"
 
 
 # -----------------------------------------------------------------------------
@@ -115,9 +122,16 @@ class FilterExec(PhysicalPlan):
 
     input: PhysicalPlan
     predicate: PhysicalExpr
+    # cache
+    _schema: TableSchema = field(init=False)
+    _empty: DataBatch = field(init=False)
+
+    def __post_init__(self) -> None:
+        self._schema = self.input.schema()
+        self._empty = self._empty_batch()
 
     def schema(self) -> TableSchema:
-        return self.input.schema()
+        return self._schema
 
     def children(self) -> list[PhysicalPlan]:
         return [self.input]
@@ -137,7 +151,7 @@ class FilterExec(PhysicalPlan):
                 if bool(pred_col.value):
                     yield batch
                 else:
-                    yield empty_batch(self.schema())
+                    yield self._empty
                 continue
 
             # Arrow boolean mask
@@ -153,6 +167,15 @@ class FilterExec(PhysicalPlan):
             ]
 
             yield DataBatch(self.schema(), filtered_fields)
+
+    def _empty_batch(self) -> DataBatch:
+        """
+        Create an empty DataBatch with the given schema.
+        """
+        fields: list[ColumnData] = [
+            ArrowColumn(pa.array([], type=f.data_type)) for f in self._schema.fields
+        ]
+        return DataBatch(self._schema, fields)
 
     def __str__(self) -> str:
         return f"FilterExec: ({self.predicate})"
@@ -189,16 +212,6 @@ def count_true(mask: pa.Array) -> int:
     ints = pc.fill_null(ints, 0)
     total = pc.sum(ints)
     return int(total.as_py() or 0)
-
-
-def empty_batch(schema: TableSchema) -> DataBatch:
-    """
-    Create an empty DataBatch with the given schema.
-    """
-    fields: list[ColumnData] = [
-        ArrowColumn(pa.array([], type=f.data_type)) for f in schema.fields
-    ]
-    return DataBatch(schema, fields)
 
 
 def _materialize(col: ColumnData) -> pa.Array:
