@@ -20,7 +20,10 @@ In this part we implement:
 
 Example:
 ```python
-    lf: mqe.LazyFrame = (
+import core as mqe
+from core import col
+
+lf: mqe.LazyFrame = (
         mqe.from_dict(
             {
                 "id": [1, 2, 3],
@@ -32,9 +35,11 @@ Example:
         .select("id", (col("id") * 2).alias("new_id"), "first_name")
     )
 
-    lf.explain(verbose=True)
+lf.explain(verbose=True)
 
-    result: mqe.DataFrame = lf.collect()
+result: mqe.DataFrame = lf.collect()
+print("\n===== EXAMPLE =====\n")
+print(result)
 ```
 Result:
 ```
