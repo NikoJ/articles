@@ -17,6 +17,56 @@ In this part we implement:
 - Expression binding (column name → index)
 - Explain support for both logical and physical plans
 - End-to-end execution on Arrow batches
+
+Example:
+```python
+    lf: mqe.LazyFrame = (
+        mqe.from_dict(
+            {
+                "id": [1, 2, 3],
+                "first_name": ["Niko", "Alice", "Joy"],
+                "state": ["CO", "CA", "NY"],
+            }
+        )
+        .filter(col("first_name") == "Niko")
+        .select("id", (col("id") * 2).alias("new_id"), "first_name")
+    )
+
+    lf.explain(verbose=True)
+
+    result: mqe.DataFrame = lf.collect()
+```
+Result:
+```
+===== LOGICAL PLAN =====
+
+Projection: #id, (#id * 2) AS new_id, #first_name  [id:int64, new_id:int64, first_name:string]
+└── Filter: (#first_name = 'Niko')  [id:int64, first_name:string, state:string]
+    └── Scan: in_memory; projection=None  [id:int64, first_name:string, state:string]
+
+===== PHYSICAL PLAN =====
+
+ProjectionExec: #0, (#0 * 2), #1  [id:int64, new_id:int64, first_name:string]
+    └── FilterExec: ((#1 = 'Niko'))  [id:int64, first_name:string, state:string]
+        └── ScanExec: projection=None, source=InMemoryDataSource)  [id:int64, first_name:string, state:string]
+
+===== EXAMPLE =====
+
+DataFrame Summary
+Rows:    1
+Columns: 3
+Batches: 1
+Schema:  id:int64, new_id:int64, first_name:string
+===================================================
+[Batch 0]
+Rows:    1
+Columns: 3
+Data:
+--------------------------
+id      new_id  first_name
+--------------------------
+1       2       Niko
+```
 ---
 
 ## 📁 Project Structure
