@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from typing import Iterator, Optional
 
-from core.tables import DataBatch, TableSchema
+from core.tables import ColumnData, DataBatch, TableSchema
 
 
 class DataSource:
@@ -39,9 +39,11 @@ class InMemoryDataSource(DataSource):
                 raise ValueError(
                     "Cannot infer schema: data is empty and schema was not provided"
                 )
-            self._schema = self.data[0].schema
+            self._schema: TableSchema = self.data[0].schema
 
-        self._name_to_index = {f.name: i for i, f in enumerate(self._schema.fields)}
+        self._name_to_index: dict[str, int] = {
+            f.name: i for i, f in enumerate(self._schema.fields)
+        }
 
     def schema(self) -> TableSchema:
         assert self._schema is not None
@@ -52,7 +54,7 @@ class InMemoryDataSource(DataSource):
             yield from self.data
             return
 
-        schema = self.schema()
+        schema: TableSchema = self.schema()
 
         indices: list[int] = []
         for name in projection:
@@ -61,8 +63,8 @@ class InMemoryDataSource(DataSource):
                 raise ValueError(f"Column '{name}' not found in schema")
             indices.append(idx)
 
-        projected_schema = schema.select(projection)
+        projected_schema: TableSchema = schema.select(projection)
 
         for batch in self.data:
-            projected_fields = [batch.field(i) for i in indices]
+            projected_fields: list[ColumnData] = [batch.field(i) for i in indices]
             yield DataBatch(projected_schema, projected_fields)

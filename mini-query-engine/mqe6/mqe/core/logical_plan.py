@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Optional
+from typing import Optional, Sequence
 
 from core.datasources import DataSource
 from core.tables import SchemaField, TableSchema
@@ -114,7 +114,7 @@ class Projection(LogicalPlan):
     """
 
     input: LogicalPlan
-    exprs: list[LogicalExpr]
+    exprs: Sequence[LogicalExpr]
     _schema: TableSchema = field(init=False)
 
     def __post_init__(self) -> None:

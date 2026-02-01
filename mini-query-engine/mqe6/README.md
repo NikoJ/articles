@@ -23,7 +23,10 @@ TODO
         ├── logical_expr.py     # Expression DSL (logical layer)
         ├── datasources.py      # Data sources (e.g., InMemoryDataSource)
         ├── physical_plan.py    # Physical operators + explain(): ScanExec/FilterExec/ProjectionExec
-        └── physical_expr.py    # Executable expressions (Arrow-first evaluation)
+        └── planer.py           # TODO
+        └── frames.py           # TODO
+        └── context.py          # TODO
+        └── optimizer.py        # TODO
 ---
 
 ## 🚀 Getting Started

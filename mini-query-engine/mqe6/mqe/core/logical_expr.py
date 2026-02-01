@@ -125,7 +125,7 @@ class LogicalExprNode(LogicalExpr):
         return Mod(_ensure_expr(other), self)
 
     # Aliasing
-    def as_(self, name: str) -> "Alias":
+    def alias(self, name: str) -> "Alias":
         return Alias(self, name)
 
 
@@ -243,13 +243,13 @@ class CastExpr(LogicalExprNode):
 @dataclass(frozen=True, eq=False)
 class Alias(LogicalExprNode):
     expr: LogicalExpr
-    alias: str
+    alias_: str
 
     def to_field(self, input: LogicalPlan) -> SchemaField:
-        return SchemaField(self.alias, self.expr.to_field(input).data_type)
+        return SchemaField(self.alias_, self.expr.to_field(input).data_type)
 
     def __str__(self) -> str:
-        return f"{self.expr} AS {self.alias}"
+        return f"{self.expr} AS {self.alias_}"
 
 
 @dataclass(frozen=True, eq=False)

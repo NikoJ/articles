@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Iterator
+from typing import Iterator, Sequence
 
 import pyarrow as pa
 import pyarrow.compute as pc
@@ -159,8 +159,8 @@ class FilterExec(PhysicalPlan):
                 # fallback: materialize predicate into Arrow array
                 pred_col = ArrowColumn(_materialize(pred_col))
 
-            mask = pred_col.array  # pa.BooleanArray
-            keep_count = count_true(mask)
+            mask: pa.BooleanArray = pred_col.array
+            keep_count: int = count_true(mask)
 
             filtered_fields: list[ColumnData] = [
                 filter_column(col, mask, keep_count) for col in batch.fields
@@ -240,7 +240,7 @@ class ProjectionExec(PhysicalPlan):
     """
 
     input: PhysicalPlan
-    exprs: list[PhysicalExpr]
+    exprs: Sequence[PhysicalExpr]
     _schema: TableSchema
 
     def __post_init__(self) -> None:
