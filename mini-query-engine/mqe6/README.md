@@ -6,7 +6,9 @@ built on top of **Apache Arrow**.
 MQE6 focuses on connecting the DataFrame API, logical plan, and physical execution layers.
 We introduce a minimal lazy DataFrame interface and compile queries end-to-end:
 
-`DataFrame API → Logical Plan → Physical Plan → Execution`
+```
+DataFrame API → Logical Plan → Physical Plan → Execution
+```
 
 In this part we implement:
 - ExecutionContext — single entry point for building and executing queries
