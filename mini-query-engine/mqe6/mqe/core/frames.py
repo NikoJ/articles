@@ -50,14 +50,8 @@ class LazyFrame:
     def schema(self) -> TableSchema:
         return self._plan.schema()
 
-    def _execute(self) -> Iterator[DataBatch]:
-        return self._ctx.execute(self._plan)
-
-    def _collect_batches(self) -> list[DataBatch]:
-        return list(self._execute())
-
     def collect(self) -> "DataFrame":
-        batches: list[DataBatch] = self._collect_batches()
+        batches: list[DataBatch] = list(self._ctx.execute(self._plan))
         return DataFrame(batches=batches, _ctx=self._ctx)
 
     def explain(self, verbose: bool = False):

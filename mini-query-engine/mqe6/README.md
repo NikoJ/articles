@@ -1,10 +1,20 @@
-# [MQE6](https://nikoondata.substack.com/)
+# [MQE6: From DataFrame API to Query Execution](https://nikoondata.substack.com/)
 
 This repo contains a small educational prototype of a **mini query engine in Python**,
 built on top of **Apache Arrow**.
 
-TODO
+MQE6 focuses on connecting the DataFrame API, logical plan, and physical execution layers.
+We introduce a minimal lazy DataFrame interface and compile queries end-to-end:
 
+`DataFrame API → Logical Plan → Physical Plan → Execution`
+
+In this part we implement:
+- ExecutionContext — single entry point for building and executing queries
+- LazyFrame / DataFrame API (select, filter, collect)
+- Logical → Physical compilation via the planner
+- Expression binding (column name → index)
+- Explain support for both logical and physical plans
+- End-to-end execution on Arrow batches
 ---
 
 ## 📁 Project Structure
@@ -23,10 +33,9 @@ TODO
         ├── logical_expr.py     # Expression DSL (logical layer)
         ├── datasources.py      # Data sources (e.g., InMemoryDataSource)
         ├── physical_plan.py    # Physical operators + explain(): ScanExec/FilterExec/ProjectionExec
-        └── planer.py           # TODO
-        └── frames.py           # TODO
-        └── context.py          # TODO
-        └── optimizer.py        # TODO
+        ├── planner.py          # Logical → Physical compilation + binding
+        ├── frames.py           # LazyFrame/DataFrame user API
+        └── context.py          # ExecutionContext (entry point)
 ---
 
 ## 🚀 Getting Started
