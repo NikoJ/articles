@@ -49,7 +49,6 @@ class TableSchema:
         if len(names) != len(set(names)):
             raise ValueError("TableSchema contains duplicate field names")
 
-
     def select(self, names: list[str]) -> "TableSchema":
         """
         Return a new TableSchema containing only fields listed in `names`.
@@ -60,16 +59,16 @@ class TableSchema:
         if not names:
             return TableSchema([])
 
-        index:dict[str, SchemaField] = {f.name: f for f in self.fields}
+        index: dict[str, SchemaField] = {f.name: f for f in self.fields}
 
-        missing:list[str] = [name for name in names if name not in index]
+        missing: list[str] = [name for name in names if name not in index]
         if missing:
             raise ValueError(
                 f"Unknown columns in projection: {missing}. "
                 f"Available columns: {sorted(index.keys())}"
             )
 
-        selected_fields:list[SchemaField] = [index[name] for name in names]
+        selected_fields: list[SchemaField] = [index[name] for name in names]
         return TableSchema(selected_fields)
 
     def to_arrow(self) -> pa.Schema:
@@ -77,6 +76,9 @@ class TableSchema:
         Convert this TableSchema into a pyarrow.Schema.
         """
         return pa.schema([field.to_arrow() for field in self.fields])
+
+    def __str__(self) -> str:
+        return ", ".join(f"{f.name}:{f.data_type}" for f in self.fields)
 
 
 @dataclass
@@ -173,18 +175,18 @@ class DataBatch:
 
         # Column headers
         col_names = [field.name for field in schema.fields]
-        col_types = [str(field.data_type) for field in schema.fields]
+        # col_types = [str(field.data_type) for field in schema.fields]
 
         lines: list[str] = []
+        header_col_names: str = "\t".join(col_names)
 
         # Visual separator
-        lines.append("———")
+        separator: str = "-" * len(header_col_names) + "-" * len(col_names) * 2
+        lines.append(separator)
         # Column names
-        lines.append("\t".join(col_names))
-        # Column types
-        lines.append("\t".join(col_types))
-        # Visual separator before data
-        lines.append("———")
+        lines.append(header_col_names)
+        # Visual separator
+        lines.append(separator)
 
         # Data rows
         for row_index in range(row_count):
