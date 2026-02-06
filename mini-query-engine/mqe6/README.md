@@ -1,4 +1,4 @@
-# [MQE6: From DataFrame API to Query Execution](https://nikoondata.substack.com/)
+# [MQE6: From DataFrame API to Query Execution](https://nikoondata.substack.com/p/mqe6-from-dataframe-api-to-query-execution)
 
 This repo contains a small educational prototype of a **mini query engine in Python**,
 built on top of **Apache Arrow**.
