@@ -28,7 +28,7 @@ The engine is built around:
 - [MQE3: Preparing Expressions for Logical Plans](https://nikoondata.substack.com/p/mqe3-preparing-exprs-for-logical-plans)
 - [MQE4: Logical Query Plans (Scan, Filter, Projection)](https://nikoondata.substack.com/p/mqe4-logical-query-plans-scan-filter-projection)
 - [MQE5: Physical Plan and Query Execution](https://nikoondata.substack.com/p/mqe5-physical-plan-and-query-execution)
-- MQE6: Executor + DataFrame
+- [MQE6: From DataFrame API to Query Execution](https://nikoondata.substack.com/p/mqe6-from-dataframe-api-to-query-execution)
 - MQE7: Data sources: CSV and the DataSource layer
 - MQE8: Optimizer + EXPLAIN: simple logical rewrites
 - MQE9: SQL frontend: plugging in a ready-made parser
