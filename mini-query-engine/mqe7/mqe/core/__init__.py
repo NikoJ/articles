@@ -1,5 +1,7 @@
 from typing import Any, Optional
 
+from core.readers import DataReader
+
 from .context import ExecutionContext
 from .datatypes import ArrowColumn
 from .frames import DataFrame, LazyFrame
@@ -7,6 +9,8 @@ from .logical_expr import col
 from .tables import DataBatch, SchemaField, TableSchema
 
 _default_ctx = ExecutionContext()
+
+read: DataReader = _default_ctx.read
 
 
 def get_context() -> ExecutionContext:
@@ -35,4 +39,5 @@ __all__ = [
     "get_context",
     "from_dict",
     "from_batches",
+    "read",
 ]

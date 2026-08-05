@@ -1,9 +1,9 @@
 from dataclasses import dataclass
-from typing import Sequence
+from typing import Self, Sequence
 
 import pyarrow as pa
 
-from core.datatypes import ColumnData
+from core.datatypes import ArrowColumn, ColumnData
 
 
 @dataclass
@@ -79,6 +79,18 @@ class TableSchema:
 
     def __str__(self) -> str:
         return ", ".join(f"{f.name}:{f.data_type}" for f in self.fields)
+
+    @classmethod
+    def from_arrow(cls, schema: pa.Schema) -> Self:
+        return cls(
+            fields=[
+                SchemaField(
+                    name=field.name,
+                    data_type=field.type,
+                )
+                for field in schema
+            ]
+        )
 
 
 @dataclass
@@ -208,4 +220,14 @@ class DataBatch:
             f"Columns: {self.column_count()}\n"
             f"Data:\n"
             f"{self._to_tab_table_str()}"
+        )
+
+    @classmethod
+    def from_arrow(cls, batch: pa.RecordBatch) -> Self:
+        """
+        Create a DataBatch from a PyArrow RecordBatch.
+        """
+        return cls(
+            schema=TableSchema.from_arrow(batch.schema),
+            fields=[ArrowColumn(batch.column(i)) for i in range(batch.num_columns)],
         )

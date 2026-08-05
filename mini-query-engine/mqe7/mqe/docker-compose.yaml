@@ -1,4 +1,3 @@
-
 name: mqe7
 services:
   mqe7:
@@ -12,6 +11,8 @@ services:
     volumes:
       - ./core:/mqe/core
       - ./demo.py:/mqe/demo.py
+      - ./demo.csv:/data/demo.csv
+      - ./demo.parquet:/data/demo.parquet
       - ./pyproject.toml:/mqe/pyproject.toml
       - ./uv.lock:/mqe/uv.lock
 
