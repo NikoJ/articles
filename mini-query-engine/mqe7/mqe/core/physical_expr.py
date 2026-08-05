@@ -177,7 +177,7 @@ def _binary_compute(
     """
     if left.get_size() != right.get_size():
         raise ValueError(
-            f"Column sizes must match: { left.get_size() } != { right.get_size() }"
+            f"Column sizes must match: {left.get_size()} != {right.get_size()}"
         )
 
     # ---- literal vs literal (compute once)

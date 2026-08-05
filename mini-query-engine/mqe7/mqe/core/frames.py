@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Iterator, Union
+from typing import TYPE_CHECKING, Union
 
 if TYPE_CHECKING:
     from core.context import ExecutionContext
