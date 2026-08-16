@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod
 from contextlib import closing
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -9,20 +10,25 @@ import pyarrow.parquet as papq
 from core.tables import ColumnData, DataBatch, TableSchema
 
 
-class DataSource:
+class DataSource(ABC):
     """
-    Mock implementation. The implementation will be in future articles.
+    Abstract base class for data sources.
+
+    Implementations (InMemoryDataSource, CSVDataSource, ParquetDataSource)
+    know how to expose a schema and stream data as DataBatch.
     """
 
+    @abstractmethod
     def schema(self) -> TableSchema:
         """
         Return the schema for the underlying data source.
         """
-        raise NotImplementedError
+        ...
 
+    @abstractmethod
     def scan(self, projection: list[str]) -> Iterator[DataBatch]:
         """Scan the data source, selecting the specified columns"""
-        raise NotImplementedError
+        ...
 
 
 @dataclass
@@ -219,20 +225,13 @@ class ParquetDataSource(DataSource):
                 f"Parquet batch_size must be greater than zero, got {self.batch_size}"
             )
 
-    def _open_file(self) -> papq.ParquetFile:
-        return papq.ParquetFile(self.path)
-
     def schema(self) -> TableSchema:
         """
         Return and cache the Arrow-compatible schema stored in the file.
         """
         if self._schema is None:
-            parquet_file = self._open_file()
-
-            try:
+            with papq.ParquetFile(self.path) as parquet_file:
                 self._schema = TableSchema.from_arrow(parquet_file.schema_arrow)
-            finally:
-                parquet_file.close()
 
         return self._schema
 
@@ -251,19 +250,13 @@ class ParquetDataSource(DataSource):
         if selected_columns is not None:
             self._validate_projection(selected_columns)
 
-        parquet_file = self._open_file()
-
-        try:
-            batches = parquet_file.iter_batches(
+        with papq.ParquetFile(self.path) as parquet_file:
+            for record_batch in parquet_file.iter_batches(
                 batch_size=self.batch_size,
                 columns=selected_columns,
                 use_threads=self.use_threads,
-            )
-
-            for record_batch in batches:
+            ):
                 yield DataBatch.from_arrow(record_batch)
-        finally:
-            parquet_file.close()
 
     def _validate_projection(
         self,

@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from typing import Iterator, Sequence
 
@@ -13,30 +14,33 @@ from core.tables import DataBatch, TableSchema
 # -----------------------------------------------------------------------------
 
 
-class PhysicalPlan:
+class PhysicalPlan(ABC):
     """
     A physical plan is an executable query plan.
 
     Unlike a logical plan (intent), a physical plan knows how to produce DataBatches.
     """
 
+    @abstractmethod
     def schema(self) -> TableSchema:
         """
         Return the output schema produced by this physical operator.
         """
-        raise NotImplementedError
+        ...
 
+    @abstractmethod
     def execute(self) -> Iterator[DataBatch]:
         """
         Execute this operator and stream DataBatches.
         """
-        raise NotImplementedError
+        ...
 
+    @abstractmethod
     def children(self) -> list["PhysicalPlan"]:
         """
         Return input physical operators (children) of this node.
         """
-        raise NotImplementedError
+        ...
 
     def explain(self, verbose: bool = False) -> str:
         """
@@ -47,7 +51,7 @@ class PhysicalPlan:
         return print_physical_plan(self, verbose=verbose)
 
 
-class PhysicalExpr:
+class PhysicalExpr(ABC):
     """
     Executable (physical) expression evaluated over a DataBatch.
 
@@ -56,11 +60,12 @@ class PhysicalExpr:
     (e.g., FilterExec, ProjectionExec). Arrow kernels are preferred when possible.
     """
 
+    @abstractmethod
     def evaluate(self, input: DataBatch) -> ColumnData:
         """
         Evaluate this expression on the given DataBatch.
         """
-        raise NotImplementedError
+        ...
 
 
 # -----------------------------------------------------------------------------
@@ -102,7 +107,7 @@ class ScanExec(PhysicalPlan):
 
     def __str__(self) -> str:
         proj = None if not self.projection else self.projection
-        return f"ScanExec: projection={proj}, source={type(self.data_source).__name__})"
+        return f"ScanExec: projection={proj}, source={type(self.data_source).__name__}"
 
 
 # -----------------------------------------------------------------------------

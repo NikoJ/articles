@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from typing import Optional, Sequence
 
@@ -5,23 +6,25 @@ from core.datasources import DataSource
 from core.tables import SchemaField, TableSchema
 
 
-class LogicalPlan:
+class LogicalPlan(ABC):
     """
     A logical plan represents a data transformation or action that
     returns a relation (a set of tuples).
     """
 
+    @abstractmethod
     def schema(self) -> TableSchema:
         """
         Returns the schema of the data that will be produced by this logical plan.
         """
-        raise NotImplementedError
+        ...
 
+    @abstractmethod
     def children(self) -> list["LogicalPlan"]:
         """
         Returns the children (inputs) of this logical plan.
         """
-        raise NotImplementedError
+        ...
 
     def explain(self, verbose: bool = False) -> str:
         """
@@ -34,19 +37,20 @@ class LogicalPlan:
         return print_logical_plan(self, verbose=verbose)
 
 
-class LogicalExpr:
+class LogicalExpr(ABC):
     """
     Logical expression used in logical query plans. Expressions describe computations
     without executing them and are resolved against an input LogicalPlan during
     planning to infer the resulting field name and data type.
     """
 
+    @abstractmethod
     def to_field(self, input: LogicalPlan) -> SchemaField:
         """
         Resolve this expression against the given logical plan and return
         the resulting SchemaField (name and data type).
         """
-        raise NotImplementedError
+        ...
 
 
 # -----------------------------------------------------------------------------
