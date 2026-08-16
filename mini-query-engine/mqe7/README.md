@@ -1,4 +1,4 @@
-# [MQE7](https://nikoondata.substack.com/)
+# [MQE7: Reading Data and the DataSource Layer](https://nikoondata.substack.com/p/mqe7-reading-data-datasource)
 
 This repo contains a small educational prototype of a **mini query engine in Python**,
 built on top of **Apache Arrow**.
