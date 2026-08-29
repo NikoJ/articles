@@ -1,0 +1,19 @@
+name: mqe9
+services:
+  mqe9:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: mqe9
+    container_name: mqe
+    working_dir: /mqe
+
+    volumes:
+      - ./core:/mqe/core
+      - ./demo.py:/mqe/demo.py
+      - ./demo.csv:/data/demo.csv
+      - ./demo.parquet:/data/demo.parquet
+      - ./pyproject.toml:/mqe/pyproject.toml
+      - ./uv.lock:/mqe/uv.lock
+
+    command: sleep infinity
