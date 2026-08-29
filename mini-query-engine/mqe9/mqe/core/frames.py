@@ -54,12 +54,24 @@ class LazyFrame:
         batches: list[DataBatch] = list(self._ctx.execute(self._plan))
         return DataFrame(batches=batches, _ctx=self._ctx)
 
-    def explain(self, verbose: bool = False):
+    def explain(self, verbose: bool = False, optimized: bool = True):
+        """
+        Print the logical (and, if optimized=True, optimized logical) plan,
+        plus the physical plan built from it.
+        """
         print("\n===== LOGICAL PLAN =====\n")
         print(self._plan.explain(verbose))
 
+        if optimized:
+            optimized_plan = self._ctx.optimize(self._plan)
+            print("\n===== OPTIMIZED LOGICAL PLAN =====\n")
+            print(optimized_plan.explain(verbose))
+
         print("\n===== PHYSICAL PLAN =====\n")
-        print(self._ctx.generate_physical_plan(self._plan).explain(verbose))
+        physical_plan = self._ctx.generate_physical_plan(
+            self._plan, optimized=optimized
+        )
+        print(physical_plan.explain(verbose))
 
 
 @dataclass

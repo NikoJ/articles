@@ -27,6 +27,7 @@ class ExecutionContext:
 
     def __init__(self) -> None:
         self.read: DataReader = DataReader(self)
+        self.optimizer: Optimizer = Optimizer()
 
     def _from_data_source(
         self,
@@ -81,9 +82,18 @@ class ExecutionContext:
 
         return self.from_batches([batch], schema=schema)
 
-    def generate_physical_plan(self, plan: LogicalPlan) -> PhysicalPlan:
-        optimized: LogicalPlan = Optimizer().optimize(plan)  # just a dummy
-        return Planner().create_physical_plan(optimized)
+    def optimize(self, plan: LogicalPlan) -> LogicalPlan:
+        """
+        Run the logical plan through the optimizer's rule pipeline,
+        returning an equivalent, cheaper plan.
+        """
+        return self.optimizer.optimize(plan)
+
+    def generate_physical_plan(
+        self, plan: LogicalPlan, optimized: bool = True
+    ) -> PhysicalPlan:
+        target_plan: LogicalPlan = self.optimize(plan) if optimized else plan
+        return Planner().create_physical_plan(target_plan)
 
     def execute(self, plan: LogicalPlan) -> Iterator[DataBatch]:
         """
