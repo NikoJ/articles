@@ -1,43 +1,40 @@
 import core as mqe
 from core import col
+from core.optimizer import Optimizer, PredicatePushDown, ProjectionPushDown
+
+RULE_SETS: list[tuple[str, list]] = [
+    ("ProjectionPushDown ONLY", [ProjectionPushDown()]),
+    ("PredicatePushDown ONLY", [PredicatePushDown()]),
+    ("BOTH", [PredicatePushDown(), ProjectionPushDown()]),
+]
+
+
+def compare_rules(lf: mqe.LazyFrame) -> None:
+    ctx = mqe.get_context()
+    original_optimizer = ctx.optimizer
+
+    print("\n----- NO OPTIMIZATION -----")
+    lf.explain(verbose=True, optimized=False)
+
+    try:
+        for label, rules in RULE_SETS:
+            ctx.optimizer = Optimizer(rules=rules)
+            print(f"\n----- {label} -----")
+            lf.explain(verbose=True, optimized=True)
+    finally:
+        ctx.optimizer = original_optimizer
 
 
 def main() -> None:
-    # Example *csv*
     lf: mqe.LazyFrame = (
         mqe.read.csv("/data/demo.csv")
+        .select("id", "first_name")
         .filter(col("first_name") == "Niko")
-        .select("id", (col("id") * 2).alias("new_id"), "first_name")
     )
+    compare_rules(lf)
 
-    print("\n===== EXPLAIN PLAN (csv) =====")
-    lf.explain(verbose=True)
-
-    print("\n===== EXAMPLE 1 (csv) =====\n")
-    result: mqe.DataFrame = lf.collect()
-    print(result)
-
-    print("\n===== EXAMPLE 2 (csv) =====\n")
-    result2: mqe.DataFrame = result.select("first_name")
-    print(result2)
-
-    # Example *parquet*
-    lf: mqe.LazyFrame = (
-        mqe.read.parquet("/data/demo.parquet")
-        .filter(col("first_name") == "Alice")
-        .select("id", (col("id") * 2).alias("new_id"), "first_name")
-    )
-
-    print("\n===== EXPLAIN PLAN (parquet) =====")
-    lf.explain(verbose=True)
-
-    print("\n===== EXAMPLE 1 (parquet) =====\n")
-    result: mqe.DataFrame = lf.collect()
-    print(result)
-
-    print("\n===== EXAMPLE 2 (parquet) =====\n")
-    result2: mqe.DataFrame = result.select("first_name")
-    print(result2)
+    print("\n===== RESULT =====\n")
+    print(lf.collect())
 
 
 if __name__ == "__main__":
