@@ -1,9 +1,16 @@
-# [MQE8](https://nikoondata.substack.com/)
+# [MQE8: Optimizer + EXPLAIN](https://nikoondata.substack.com/)
 
 This repo contains a small educational prototype of a **mini query engine in Python**,
 built on top of **Apache Arrow**.
 
-TODO
+MQE8 gives the engine its first real logical-plan optimizations: a small,
+rule-based `Optimizer` rewrites a `LogicalPlan` before it's compiled to a physical plan.
+`PredicatePushDown` moves `Filter` nodes below `Projection` nodes when every column the
+predicate needs passes through unchanged, and `ProjectionPushDown` prunes each `Scan`'s column
+projection down to only the columns still referenced further up the tree — so
+`CSVDataSource`/`ParquetDataSource` read less data. `LazyFrame.explain()` now
+takes an `optimized` flag and prints the optimized logical plan alongside the
+original and the physical plan.
 
 ## 📁 Project Structure
 
@@ -23,7 +30,7 @@ TODO
         ├── logical_expr.py     # Expression DSL (logical layer)
         ├── datasources.py      # DataSource: InMemory / CSV / Parquet
         ├── readers.py          # DataReader (ctx.read.csv / ctx.read.parquet)
-        ├── optimizer.py        # Logical plan optimizer (no-op passthrough for now)
+        ├── optimizer.py        # Optimizer + rules: PredicatePushDown / ProjectionPushDown
         ├── physical_plan.py    # Physical operators + explain(): ScanExec/FilterExec/ProjectionExec
         ├── physical_expr.py    # Bound, executable expressions (physical layer)
         ├── planner.py          # Logical → Physical compilation + binding
