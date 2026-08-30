@@ -12,6 +12,7 @@ from core.logical_expr import (
     Eq,
     Gt,
     GtEq,
+    LiteralBoolean,
     LiteralDouble,
     LiteralLong,
     LiteralString,
@@ -90,6 +91,9 @@ class Planner:
 
         if isinstance(expr, LiteralString):
             return lit(expr.s)
+
+        if isinstance(expr, LiteralBoolean):
+            return lit(expr.b)
 
         # Column ref by index
         if isinstance(expr, ColumnIndex):

@@ -27,6 +27,14 @@ def from_batches(
     return _default_ctx.from_batches(batches, schema=schema)
 
 
+def register_table(name: str, source: LazyFrame) -> None:
+    return _default_ctx.register_table(name, source)
+
+
+def sql(query: str, verbose: bool = False) -> LazyFrame:
+    return _default_ctx.sql(query, verbose=verbose)
+
+
 __all__ = [
     "ArrowColumn",
     "DataBatch",
@@ -40,4 +48,6 @@ __all__ = [
     "from_dict",
     "get_context",
     "read",
+    "register_table",
+    "sql",
 ]

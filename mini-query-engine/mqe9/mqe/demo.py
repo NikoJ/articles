@@ -3,41 +3,37 @@ from core import col
 
 
 def main() -> None:
-    # Example *csv*
+    # DataFrame API
     lf: mqe.LazyFrame = (
         mqe.read.csv("/data/demo.csv")
         .filter(col("first_name") == "Niko")
         .select("id", (col("id") * 2).alias("new_id"), "first_name")
     )
 
-    print("\n===== EXPLAIN PLAN (csv) =====")
+    print("\n===== EXPLAIN PLAN (DataFrame API) =====")
     lf.explain(verbose=True)
 
-    print("\n===== EXAMPLE 1 (csv) =====\n")
-    result: mqe.DataFrame = lf.collect()
-    print(result)
+    print("\n===== RESULT (DataFrame API) =====\n")
+    print(lf.collect())
 
-    print("\n===== EXAMPLE 2 (csv) =====\n")
-    result2: mqe.DataFrame = result.select("first_name")
-    print(result2)
+    # SQL
+    mqe.register_table("demo", mqe.read.csv("/data/demo.csv"))
 
-    # Example *parquet*
-    lf: mqe.LazyFrame = (
-        mqe.read.parquet("/data/demo.parquet")
-        .filter(col("first_name") == "Alice")
-        .select("id", (col("id") * 2).alias("new_id"), "first_name")
+    print("\n===== SQL AST (sqlglot) =====")
+    sql_lf: mqe.LazyFrame = mqe.sql(
+        """
+        SELECT id, (id * 2) AS new_id, first_name
+        FROM demo
+        WHERE first_name = 'Niko'
+        """,
+        verbose=True,
     )
 
-    print("\n===== EXPLAIN PLAN (parquet) =====")
-    lf.explain(verbose=True)
+    print("\n===== EXPLAIN PLAN (SQL) =====")
+    sql_lf.explain(verbose=True)
 
-    print("\n===== EXAMPLE 1 (parquet) =====\n")
-    result: mqe.DataFrame = lf.collect()
-    print(result)
-
-    print("\n===== EXAMPLE 2 (parquet) =====\n")
-    result2: mqe.DataFrame = result.select("first_name")
-    print(result2)
+    print("\n===== RESULT (SQL) =====\n")
+    print(sql_lf.collect())
 
 
 if __name__ == "__main__":

@@ -11,6 +11,7 @@ from core.optimizer import Optimizer
 from core.physical_plan import PhysicalPlan
 from core.planner import Planner
 from core.readers import DataReader
+from core.sql import SqlPlanner
 from core.tables import DataBatch, SchemaField, TableSchema
 
 
@@ -22,12 +23,14 @@ class ExecutionContext:
       - read.csv(...) / read.parquet(...)
       - from_batches(...)
       - from_dict(...)
+      - register_table(...) / sql(...)
       - execute(plan)
     """
 
     def __init__(self) -> None:
         self.read: DataReader = DataReader(self)
         self.optimizer: Optimizer = Optimizer()
+        self._tables: dict[str, LogicalPlan] = {}
 
     def _from_data_source(
         self,
@@ -81,6 +84,27 @@ class ExecutionContext:
         batch: DataBatch = DataBatch(schema=schema, fields=arr_cols)
 
         return self.from_batches([batch], schema=schema)
+
+    def register_table(self, name: str, source: LazyFrame) -> None:
+        """
+        Register a LazyFrame under `name` so SQL queries can reference it
+        in a FROM clause, e.g.:
+            ctx.register_table("demo", ctx.read.csv("/data/demo.csv"))
+            ctx.sql("SELECT id FROM demo WHERE id > 1")
+        """
+        self._tables[name] = source._plan
+
+    def get_table(self, name: str) -> LogicalPlan | None:
+        return self._tables.get(name)
+
+    def sql(self, query: str, verbose: bool = False) -> LazyFrame:
+        """
+        Parse a SQL string and build the equivalent LazyFrame.
+        Only SELECT is supported. verbose=True prints sqlglot's own AST
+        for the query before it's translated into a LogicalPlan.
+        """
+        plan: LogicalPlan = SqlPlanner(self).plan(query, verbose=verbose)
+        return LazyFrame(plan, self)
 
     def optimize(self, plan: LogicalPlan) -> LogicalPlan:
         """
