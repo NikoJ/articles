@@ -1,9 +1,22 @@
-# [MQE9](https://nikoondata.substack.com/)
+# [MQE9: SQL Frontend](https://nikoondata.substack.com/)
 
 This repo contains a small educational prototype of a **mini query engine in Python**,
 built on top of **Apache Arrow**.
 
-TODO
+MQE9 adds a thin SQL frontend on top of the existing DataFrame API:
+
+    SQL string
+       └─(sqlglot.parse_one)→ SQL AST (sqlglot expressions)
+                   └─(SqlPlanner)→ LogicalPlan
+
+[sqlglot](https://github.com/tobymao/sqlglot) parses the SQL text into itsown AST.
+`SqlPlanner` walks that AST and rebuilds it out of the engine's own `Scan`/`Filter`/`Projection` and `LogicalExpr` nodes,
+so a SQL query ends up as a regular `LogicalPlan` and runs through the same optimizer,
+planner and executor as a query built with `LazyFrame`. There's no catalog or filesystem lookup,
+a table has to be registered first with `ctx.register_table("demo", ctx.read.csv(...))` before `FROM demo` resolves.
+`ctx.sql(...)` / `mqe.sql(...)` parses a query into a `LazyFrame`.
+Only what `LogicalPlan` can express is supported: a single-table `SELECT ... FROM <table> [WHERE ...]`
+with column refs, aliases, comparisons, `AND`/`OR` and `+ - * /`.
 
 ## 📁 Project Structure
 
@@ -23,7 +36,8 @@ TODO
         ├── logical_expr.py     # Expression DSL (logical layer)
         ├── datasources.py      # DataSource: InMemory / CSV / Parquet
         ├── readers.py          # DataReader (ctx.read.csv / ctx.read.parquet)
-        ├── optimizer.py        # Logical plan optimizer (no-op passthrough for now)
+        ├── optimizer.py        # Optimizer + rules: PredicatePushDown / ProjectionPushDown
+        ├── sql.py              # SQL frontend: SqlPlanner (sqlglot AST -> LogicalPlan)
         ├── physical_plan.py    # Physical operators + explain(): ScanExec/FilterExec/ProjectionExec
         ├── physical_expr.py    # Bound, executable expressions (physical layer)
         ├── planner.py          # Logical → Physical compilation + binding
